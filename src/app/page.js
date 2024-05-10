@@ -7,12 +7,19 @@ import AirQuality from "../components/AirQuality";
 import Map from "../components/Map";
 import Forecast from "../components/Forecast";
 import { fetchAirQualityData, fetchWeatherData } from "@/helper/weather/api";
+import { signOut } from "firebase/auth";
+import { auth } from "./firebase/config";
 
 export default function Home() {
   const [selectedCity, setSelectedCity] = useState("Kolkata");
   const [weatherData, setWeatherData] = useState(null);
   const [airQualityData, setAirQualityData] = useState(null);
   const [favorites, setFavorites] = useState([]);
+
+  const Logout = () => {
+    signOut(auth);
+    sessionStorage.removeItem("user");
+  };
 
   useEffect(() => {
     if (weatherData) {

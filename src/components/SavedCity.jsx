@@ -1,19 +1,18 @@
 import React, { useState } from "react";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import {
-  Checkbox,
   IconButton,
   List,
   ListItem,
   ListItemButton,
-  ListItemIcon,
   ListItemText,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "@/app/firebase/config";
 
 const style = {
   position: "absolute",
@@ -33,6 +32,7 @@ export default function SavedCityModal({
   onFavoriteRemove,
   favorites,
 }) {
+  const [user] = useAuthState(auth);
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -42,9 +42,11 @@ export default function SavedCityModal({
   };
   return (
     <div>
-      <IconButton onClick={handleOpen}>
-        <BookmarkIcon />
-      </IconButton>
+      {user && (
+        <IconButton onClick={handleOpen} color="secondary">
+          <BookmarkIcon />
+        </IconButton>
+      )}
       <Modal
         open={open}
         onClose={handleClose}
