@@ -13,7 +13,7 @@ import {
   useMap,
 } from "react-leaflet";
 
-const Map = ({ city, weatherData, airQualityData }) => {
+const Map = ({ city, weatherData }) => {
   const ZoomHandler = () => {
     const map = useMap();
 
@@ -30,31 +30,39 @@ const Map = ({ city, weatherData, airQualityData }) => {
     });
 
     useEffect(() => {
-      if (weatherData.coord.lon) {
-        flyToMarker([weatherData.coord.lat, weatherData.coord.lon], 11);
+      if (weatherData?.coord?.lon) {
+        flyToMarker([weatherData.coord.lat, weatherData.coord.lon], 5);
       }
     }, [weatherData]);
   };
 
   return (
     <div className="flex justify-center my-5">
-      <MapContainer
-        center={[43.6426, -79.3871]}
-        zoom={11}
-        style={{
-          height: "80vh",
-          width: "80vw",
-          borderRadius: "10px",
-        }}
-      >
-        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-        {[weatherData.coord.lon, weatherData.coord.lat] && (
-          <Marker position={[weatherData.coord.lat, weatherData.coord.lon]}>
-            <Popup>{city}</Popup>
-          </Marker>
-        )}
-        <ZoomHandler />
-      </MapContainer>
+      {weatherData && (
+        <MapContainer
+          center={[43.6426, -79.3871]}
+          zoom={11}
+          style={{
+            height: "80vh",
+            width: "80vw",
+            borderRadius: "10px",
+          }}
+        >
+          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+          {weatherData?.coord?.lon && (
+            <>
+              <Marker
+                position={[weatherData?.coord?.lat, weatherData?.coord?.lon]}
+              >
+                <Popup>
+                  <p onClick={() => console.log("clicked")}>{city}</p>
+                </Popup>
+              </Marker>
+            </>
+          )}
+          <ZoomHandler />
+        </MapContainer>
+      )}
     </div>
   );
 };

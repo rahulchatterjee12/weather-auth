@@ -7,7 +7,7 @@ const Forecast = ({ city }) => {
   const [forecast, setForecast] = useState();
   const fetchCityData = async () => {
     const response = await fetchFiveDaysForecast(city);
-    setForecast(response.list.slice(0, 7));
+    setForecast(response?.list?.slice(0, 7));
   };
 
   useEffect(() => {

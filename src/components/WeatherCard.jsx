@@ -12,33 +12,30 @@ const WeatherCard = ({ weatherData }) => {
 
   const { name, main, weather, wind } = weatherData;
 
-  const weatherIcon = `https://openweathermap.org/img/wn/${weather[0].icon}@2x.png`;
+  const weatherIcon = `https://openweathermap.org/img/wn/${
+    weather && weather[0]?.icon
+  }@2x.png`;
 
   return (
     <div className="flex justify-center flex-col text-center my-5">
       <h2>{name}</h2>
-      <div className="flex justify-center">
+      <div className="flex justify-between mx-4 items-center md:justify-center md:gap-10">
+        <div className="text-start">
+          <p>Weather: {weather && weather[0].main}</p>
+          <p className="text-6xl">
+            {Math.round(main && main.temp - 273.15)}&deg;C
+          </p>
+          <p>
+            Feels like: {Math.round(main && main.feels_like - 273.15)}&deg;C
+          </p>
+          <p>Wind: {wind && wind.speed} m/s</p>
+        </div>
         <img
           src={weatherIcon}
-          alt={weather[0].main}
-          className="w-[40px] h-[40px]"
+          alt={weather && weather[0].main}
+          className="w-[150px] h-[150px]"
         />
       </div>
-      <p>
-        {Math.round(main.temp - 273.15)}&deg;C (
-        {Math.round(((main.temp - 273.15) * 9) / 5 + 32)}
-        &deg;F)
-      </p>
-      <p>
-        Feels like: {Math.round(main.feels_like - 273.15)}&deg;C (
-        {Math.round(((main.feels_like - 273.15) * 9) / 5 + 32)}&deg;F)
-      </p>
-      <p>
-        Weather: {weather[0].main} ({weather[0].description})
-      </p>
-      <p>
-        Wind: {wind.speed} m/s ({Math.round(wind.speed * 2.2369)} mph)
-      </p>
     </div>
   );
 };

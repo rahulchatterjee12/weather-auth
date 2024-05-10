@@ -1,14 +1,16 @@
 import React from "react";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import { IconButton, Select } from "@mui/material";
+import { IconButton, Select, TextField } from "@mui/material";
+import SavedCityModal from "./SavedCity";
 
-const CitySelector = ({
+const CityInput = ({
   selectedCity,
   onCityChange,
   favorites,
   onFavoriteAdd,
   onFavoriteRemove,
+  setSelectedCity,
 }) => {
   const handleSelectChange = (event) => {
     onCityChange(event.target.value);
@@ -25,17 +27,15 @@ const CitySelector = ({
   };
 
   return (
-    <div className="flex justify-center">
-      <select
+    <div className="flex text-white justify-center mx-2 gap-2">
+      <TextField
+        fullWidth
+        size="small"
+        variant="outlined"
+        color="secondary"
         value={selectedCity}
         onChange={handleSelectChange}
-        className="p-1 bg-white border border-gray-300 rounded-md text-black"
-      >
-        <option value="kolkata">Kolkata</option>
-        <option value="suri">Suri</option>
-        <option value="bolpur">Bolpur</option>
-        {/* ... */}
-      </select>
+      />
       {isFavorite(selectedCity) ? (
         <IconButton
           color="error"
@@ -48,8 +48,13 @@ const CitySelector = ({
           <FavoriteBorderIcon />
         </IconButton>
       )}
+      <SavedCityModal
+        setSelectedCity={setSelectedCity}
+        onFavoriteRemove={onFavoriteRemove}
+        favorites={favorites}
+      />
     </div>
   );
 };
 
-export default CitySelector;
+export default CityInput;

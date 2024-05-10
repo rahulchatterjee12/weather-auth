@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import CitySelector from "../components/CitySelector";
+import CityInput from "../components/CityInput";
 import WeatherCard from "../components/WeatherCard";
 import AirQuality from "../components/AirQuality";
 import Map from "../components/Map";
@@ -16,16 +16,25 @@ export default function Home() {
 
   useEffect(() => {
     if (weatherData) {
-      fetchAirQualityData(weatherData.coord).then((airQualityResponse) => {
-        setAirQualityData(airQualityResponse.data);
-      });
+      fetchAirQualityData(weatherData.coord)
+        .then((airQualityResponse) => {
+          setAirQualityData(airQualityResponse.data);
+        })
+        .catch((err) => {
+          setAirQualityData(null);
+        });
     }
   }, [weatherData]);
 
   useEffect(() => {
     const fetchCityData = async () => {
-      const weatherResponse = await fetchWeatherData(selectedCity);
-      setWeatherData(weatherResponse);
+      fetchWeatherData(selectedCity)
+        .then((weatherResponse) => {
+          setWeatherData(weatherResponse);
+        })
+        .catch((err) => {
+          setWeatherData(null);
+        });
     };
 
     fetchCityData();
@@ -63,13 +72,15 @@ export default function Home() {
         <h1 className="text-center text-2xl my-3 font-semibold font-serif">
           Weather Dashboard
         </h1>
-        <CitySelector
+        <CityInput
           selectedCity={selectedCity}
           onCityChange={handleCityChange}
           favorites={favorites}
           onFavoriteAdd={handleFavoriteAdd}
           onFavoriteRemove={handleFavoriteRemove}
+          setSelectedCity={setSelectedCity}
         />
+
         <main>
           {weatherData && (
             <>
