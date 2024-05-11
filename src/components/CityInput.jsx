@@ -1,7 +1,7 @@
 import React from "react";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import { IconButton, Select, TextField } from "@mui/material";
+import { IconButton, Select, TextField, Tooltip } from "@mui/material";
 import SavedCityModal from "./SavedCity";
 
 const CityInput = ({
@@ -37,16 +37,20 @@ const CityInput = ({
         onChange={handleSelectChange}
       />
       {isFavorite(selectedCity) ? (
-        <IconButton
-          color="error"
-          onClick={() => handleFavoriteClick(selectedCity)}
-        >
-          <FavoriteIcon />
-        </IconButton>
+        <Tooltip title="Save City">
+          <IconButton
+            color="error"
+            onClick={() => handleFavoriteClick(selectedCity)}
+          >
+            <FavoriteIcon />
+          </IconButton>
+        </Tooltip>
       ) : (
-        <IconButton onClick={() => handleFavoriteClick(selectedCity)}>
-          <FavoriteBorderIcon />
-        </IconButton>
+        <Tooltip title="Remove City">
+          <IconButton onClick={() => handleFavoriteClick(selectedCity)}>
+            <FavoriteBorderIcon />
+          </IconButton>
+        </Tooltip>
       )}
       <SavedCityModal
         setSelectedCity={setSelectedCity}

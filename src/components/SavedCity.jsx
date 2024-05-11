@@ -9,6 +9,7 @@ import {
   ListItem,
   ListItemButton,
   ListItemText,
+  Tooltip,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useAuthState } from "react-firebase-hooks/auth";
@@ -43,9 +44,11 @@ export default function SavedCityModal({
   return (
     <div>
       {user && (
-        <IconButton onClick={handleOpen} color="secondary">
-          <BookmarkIcon />
-        </IconButton>
+        <Tooltip title="Saved City">
+          <IconButton onClick={handleOpen} color="secondary">
+            <BookmarkIcon />
+          </IconButton>
+        </Tooltip>
       )}
       <Modal
         open={open}

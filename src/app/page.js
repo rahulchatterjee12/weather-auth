@@ -8,17 +8,33 @@ import Map from "../components/Map";
 import Forecast from "../components/Forecast";
 import { fetchAirQualityData, fetchWeatherData } from "@/helper/weather/api";
 import { signOut } from "firebase/auth";
+import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "./firebase/config";
+import { Avatar, Menu, MenuItem, Tooltip } from "@mui/material";
+import { deepOrange } from "@mui/material/colors";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
   const [selectedCity, setSelectedCity] = useState("Kolkata");
   const [weatherData, setWeatherData] = useState(null);
   const [airQualityData, setAirQualityData] = useState(null);
   const [favorites, setFavorites] = useState([]);
+  const [user] = useAuthState(auth);
+  const router = useRouter();
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   const Logout = () => {
     signOut(auth);
     sessionStorage.removeItem("user");
+    router.push("/sign-up");
   };
 
   useEffect(() => {
@@ -76,9 +92,41 @@ export default function Home() {
   return (
     <>
       <div className="">
-        <h1 className="text-center text-2xl my-3 font-semibold font-serif">
-          Weather Dashboard
-        </h1>
+        <div className="flex justify-between mx-3 md:mx-20 mb-5 items-center">
+          <h1 className="text-center text-2xl my-3 font-semibold font-serif">
+            Weather Dashboard
+          </h1>
+          {user ? (
+            <Tooltip title="Profile">
+              <Avatar
+                sx={{ bgcolor: deepOrange[500], cursor: "pointer" }}
+                onClick={handleClick}
+              >
+                U
+              </Avatar>
+            </Tooltip>
+          ) : (
+            <Link
+              className="border border-white rounded-full px-2 py-1"
+              href="/sign-in"
+            >
+              Sign In
+            </Link>
+          )}
+          <Menu
+            id="basic-menu"
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+            MenuListProps={{
+              "aria-labelledby": "basic-button",
+            }}
+          >
+            <MenuItem onClick={handleClose}>User name</MenuItem>
+
+            <MenuItem onClick={Logout}>Logout</MenuItem>
+          </Menu>
+        </div>
         <CityInput
           selectedCity={selectedCity}
           onCityChange={handleCityChange}

@@ -32,14 +32,20 @@ const SignIn = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-900">
+    <div className="min-h-screen flex items-center justify-center ">
       <form
         onSubmit={(e) => {
           e.preventDefault();
           handleSignIn();
         }}
-        className="bg-gray-800 p-10 rounded-lg shadow-xl w-96"
+        className="bg-sky-700 p-10 rounded-lg shadow-xl w-96"
       >
+        <Link
+          href="/"
+          className="text-white text-3xl text-center mb-2 font-semibold"
+        >
+          Check Weather
+        </Link>
         <h1 className="text-white text-2xl mb-5">Sign In</h1>
         <input
           required
@@ -47,7 +53,7 @@ const SignIn = () => {
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full p-3 mb-4 bg-gray-700 rounded outline-none text-white placeholder-gray-500"
+          className="w-full p-3 mb-4  rounded outline-none text-black placeholder-gray-500"
         />
         <input
           type="password"
@@ -56,7 +62,7 @@ const SignIn = () => {
           minLength={8}
           required
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full p-3 mb-4 bg-gray-700 rounded outline-none text-white placeholder-gray-500"
+          className="w-full p-3 mb-4 rounded outline-none text-black placeholder-gray-500"
         />
         <button
           type="submit"
@@ -66,7 +72,7 @@ const SignIn = () => {
         </button>
         <p className="text-end mt-4">
           Did not have an account ?{" "}
-          <Link href="/sign-up" className="text-blue-600">
+          <Link href="/sign-up" className="text-blue-800">
             Sign up
           </Link>
         </p>
