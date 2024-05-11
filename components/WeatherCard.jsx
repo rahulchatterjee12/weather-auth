@@ -21,7 +21,7 @@ const WeatherCard = ({ weatherData }) => {
 
   return (
     <div className="flex justify-center flex-col text-center my-5">
-      <h2>{name}</h2>
+      <h2 className="text-lg font-serif font-semibold">{name}</h2>
       <div className="flex justify-between mx-4 items-center md:justify-center md:gap-10">
         <div className="text-start">
           <p>
