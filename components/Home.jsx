@@ -1,22 +1,26 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import CityInput from "../components/CityInput";
-import WeatherCard from "../components/WeatherCard";
-import AirQuality from "../components/AirQuality";
-import Map from "../components/Map";
-import Forecast from "../components/Forecast";
+
 import { fetchAirQualityData, fetchWeatherData } from "@/helper/weather/api";
 import { signOut } from "firebase/auth";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "./firebase/config";
+import { auth } from "@/app/[locale]/firebase/config";
 import { Avatar, Menu, MenuItem, Tooltip } from "@mui/material";
 import { deepOrange } from "@mui/material/colors";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { addCityToFavorites, getFavoriteCities } from "@/helper/city/api";
+import CityInput from "./CityInput";
+import WeatherCard from "./WeatherCard";
+import AirQuality from "./AirQuality";
+import Forecast from "./Forecast";
+import Map from "./Map";
+import { useTranslation } from "react-i18next";
+import LanguageChanger from "./LanguageChanger";
 
-export default function Home() {
+const Home = () => {
+  const { t } = useTranslation();
   const [selectedCity, setSelectedCity] = useState("Kolkata");
   const [weatherData, setWeatherData] = useState(null);
   const [airQualityData, setAirQualityData] = useState(null);
@@ -107,38 +111,41 @@ export default function Home() {
       <div className="">
         <div className="flex justify-between mx-3 md:mx-20 mb-5 items-center">
           <h1 className="text-center text-2xl my-3 font-semibold font-serif">
-            Weather Dashboard
+            {t("common:title")}
           </h1>
-          {user ? (
-            <Tooltip title="Profile">
-              <Avatar
-                sx={{ bgcolor: deepOrange[500], cursor: "pointer" }}
-                onClick={handleClick}
+          <div className="flex items-center gap-2">
+            <LanguageChanger />
+            {user ? (
+              <Tooltip title="Profile">
+                <Avatar
+                  sx={{ bgcolor: deepOrange[500], cursor: "pointer" }}
+                  onClick={handleClick}
+                >
+                  U
+                </Avatar>
+              </Tooltip>
+            ) : (
+              <Link
+                className="border border-white rounded-full px-2 py-1"
+                href="/sign-in"
               >
-                U
-              </Avatar>
-            </Tooltip>
-          ) : (
-            <Link
-              className="border border-white rounded-full px-2 py-1"
-              href="/sign-in"
+                Sign In
+              </Link>
+            )}
+            <Menu
+              id="basic-menu"
+              anchorEl={anchorEl}
+              open={open}
+              onClose={handleClose}
+              MenuListProps={{
+                "aria-labelledby": "basic-button",
+              }}
             >
-              Sign In
-            </Link>
-          )}
-          <Menu
-            id="basic-menu"
-            anchorEl={anchorEl}
-            open={open}
-            onClose={handleClose}
-            MenuListProps={{
-              "aria-labelledby": "basic-button",
-            }}
-          >
-            <MenuItem onClick={handleClose}>User name</MenuItem>
+              <MenuItem onClick={handleClose}>User name</MenuItem>
 
-            <MenuItem onClick={Logout}>Logout</MenuItem>
-          </Menu>
+              <MenuItem onClick={Logout}>Logout</MenuItem>
+            </Menu>
+          </div>
         </div>
         <CityInput
           selectedCity={selectedCity}
@@ -166,4 +173,6 @@ export default function Home() {
       </div>
     </>
   );
-}
+};
+
+export default Home;

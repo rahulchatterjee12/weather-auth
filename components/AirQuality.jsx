@@ -1,8 +1,12 @@
-import { CircularProgress } from "@mui/material";
+"use client";
+
 import React from "react";
+import { CircularProgress } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 const AirQuality = ({ airQualityData }) => {
   const aqi = airQualityData?.current?.pollution?.aqius;
+  const { t } = useTranslation();
 
   let aqiClass;
   let healthMessage;
@@ -32,7 +36,7 @@ const AirQuality = ({ airQualityData }) => {
   return (
     <div className={`flex justify-center`}>
       <h3 className="whitespace-nowrap">
-        Air Quality Index (AQI):{" "}
+        {t("aqi")}{" "}
         {aqi ? (
           <span className={`${aqiClass}`}>
             {" "}

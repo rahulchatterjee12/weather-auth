@@ -1,25 +1,27 @@
 "use client";
+import React from "react";
 import { useState } from "react";
-import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
-import { auth } from "@/app/firebase/config";
+import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
+import { auth } from "@/app/[locale]/firebase/config";
 import { useRouter } from "next/navigation";
 import { useAuthState } from "react-firebase-hooks/auth";
 import Link from "next/link";
+import { useTranslation } from "react-i18next";
 
-const SignUp = () => {
+const SignIn = () => {
+  const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [createUserWithEmailAndPassword] =
-    useCreateUserWithEmailAndPassword(auth);
+  const [signInWithEmailAndPassword] = useSignInWithEmailAndPassword(auth);
   const router = useRouter();
 
   const [user] = useAuthState(auth);
 
   if (user) router.push("/");
 
-  const handleSignUp = async () => {
+  const handleSignIn = async () => {
     try {
-      const res = await createUserWithEmailAndPassword(email, password);
+      const res = await signInWithEmailAndPassword(email, password);
       if (res) {
         sessionStorage.setItem("user", true);
         setEmail("");
@@ -27,6 +29,7 @@ const SignUp = () => {
         router.push("/");
       }
     } catch (e) {
+      alert("Check your Email and Password");
       console.error(e);
     }
   };
@@ -36,7 +39,7 @@ const SignUp = () => {
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          handleSignUp();
+          handleSignIn();
         }}
         className="bg-sky-700 p-10 rounded-lg shadow-xl w-96"
       >
@@ -44,14 +47,14 @@ const SignUp = () => {
           href="/"
           className="text-white text-3xl text-center mb-2 font-semibold"
         >
-          Check Weather
+          {t("common:title")}
         </Link>
-        <h2 className="text-white text-2xl mb-5">Sign Up</h2>
+        <h1 className="text-white text-2xl mb-5">{t("title")}</h1>
         <input
+          required
           type="email"
           placeholder="Email"
           value={email}
-          required
           onChange={(e) => setEmail(e.target.value)}
           className="w-full p-3 mb-4  rounded outline-none text-black placeholder-gray-500"
         />
@@ -59,21 +62,21 @@ const SignUp = () => {
           type="password"
           placeholder="Password"
           value={password}
-          required
           minLength={8}
+          required
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full p-3 mb-4  rounded outline-none text-black placeholder-gray-500"
+          className="w-full p-3 mb-4 rounded outline-none text-black placeholder-gray-500"
         />
         <button
           type="submit"
           className="w-full p-3 bg-indigo-600 rounded text-white hover:bg-indigo-500"
         >
-          Sign Up
+          {t("title")}
         </button>
         <p className="text-end mt-4">
-          Already have an account ?{" "}
-          <Link href="/sign-in" className="text-blue-800">
-            Sign in
+          {t("bottom_text")}{" "}
+          <Link href="/sign-up" className="text-blue-800">
+            {t("sign_up_link")}
           </Link>
         </p>
       </form>
@@ -81,4 +84,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default SignIn;

@@ -1,7 +1,10 @@
-import { CircularProgress } from "@mui/material";
+"use client";
 import React from "react";
+import { CircularProgress } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 const WeatherCard = ({ weatherData }) => {
+  const { t } = useTranslation();
   if (!weatherData) {
     return (
       <div className="flex justify-center my-2">
@@ -21,14 +24,19 @@ const WeatherCard = ({ weatherData }) => {
       <h2>{name}</h2>
       <div className="flex justify-between mx-4 items-center md:justify-center md:gap-10">
         <div className="text-start">
-          <p>Weather: {weather && weather[0].main}</p>
+          <p>
+            {t("weather")} {weather && weather[0].main}
+          </p>
           <p className="text-6xl">
             {Math.round(main && main.temp - 273.15)}&deg;C
           </p>
           <p>
-            Feels like: {Math.round(main && main.feels_like - 273.15)}&deg;C
+            {t("feels_like")} {Math.round(main && main.feels_like - 273.15)}
+            &deg;C
           </p>
-          <p>Wind: {wind && wind.speed} m/s</p>
+          <p>
+            {t("wind")} {wind && wind.speed} m/s
+          </p>
         </div>
         <img
           src={weatherIcon}

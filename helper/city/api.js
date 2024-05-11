@@ -1,6 +1,6 @@
 "use client";
 
-import { db } from "@/app/firebase/config";
+import { db } from "../../app/[locale]/firebase/config";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 
 async function getFavoriteCities(userId) {
