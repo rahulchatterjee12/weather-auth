@@ -1,4 +1,4 @@
-import Home from "@/components/Home";
+import Home from "@/components/pages/Home";
 import initTranslations from "../i18n";
 import TranslationsProvider from "@/components/TranslationsProvider";
 

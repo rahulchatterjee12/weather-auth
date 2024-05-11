@@ -1,5 +1,5 @@
 import initTranslations from "@/app/i18n";
-import SignUp from "@/components/SignUp";
+import SignUp from "@/components/pages/SignUp";
 import TranslationsProvider from "@/components/TranslationsProvider";
 
 const i18nNamespaces = ["sign_up", "common"];

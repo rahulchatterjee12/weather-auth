@@ -18,13 +18,22 @@ const CityInput = ({
     onCityChange(event.target.value);
   };
   const [user] = useAuthState(auth);
-  const isFavorite = (city) => favorites.includes(city);
+  const isFavorite = (city) => {
+    const tempFev = [];
+    favorites.forEach((item) => {
+      tempFev.push(item.name);
+      if (item.name === city.name) {
+        setSelectedCity(item);
+      }
+    });
+    if (tempFev.includes(city.name)) return true;
+  };
 
   const handleFavoriteClick = (city) => {
     if (isFavorite(city)) {
-      onFavoriteRemove(city);
+      onFavoriteRemove(city.id);
     } else {
-      onFavoriteAdd(city);
+      onFavoriteAdd(city.name);
     }
   };
 
@@ -35,7 +44,7 @@ const CityInput = ({
         size="small"
         variant="outlined"
         color="secondary"
-        value={selectedCity}
+        value={selectedCity.name}
         onChange={handleSelectChange}
       />
       {user && (

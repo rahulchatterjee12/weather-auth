@@ -6,29 +6,28 @@ import { fetchAirQualityData, fetchWeatherData } from "@/helper/weather/api";
 import { signOut } from "firebase/auth";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/app/[locale]/firebase/config";
-import {
-  Avatar,
-  Menu,
-  MenuItem,
-  Tooltip,
-  collapseClasses,
-} from "@mui/material";
+import { Avatar, Menu, MenuItem, Tooltip } from "@mui/material";
 import { deepOrange } from "@mui/material/colors";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import CityInput from "./CityInput";
-import WeatherCard from "./WeatherCard";
-import AirQuality from "./AirQuality";
-import Forecast from "./Forecast";
-import Map from "./Map";
+import CityInput from "../CityInput";
+import WeatherCard from "../WeatherCard";
+import AirQuality from "../AirQuality";
+import Forecast from "../Forecast";
+import Map from "../Map";
 import { useTranslation } from "react-i18next";
-import LanguageChanger from "./LanguageChanger";
+import LanguageChanger from "../LanguageChanger";
 import { clearUser, setUser } from "@/store/slices/userSlice";
 import { useDispatch, useSelector } from "react-redux";
+import {
+  addCityToFavorites,
+  getFavoriteCities,
+  removeCityFromFavorites,
+} from "@/helper/city/api";
 
 const Home = () => {
   const { t } = useTranslation();
-  const [selectedCity, setSelectedCity] = useState("Kolkata");
+  const [selectedCity, setSelectedCity] = useState({ name: "Kolkata" });
   const [weatherData, setWeatherData] = useState(null);
   const [airQualityData, setAirQualityData] = useState(null);
   const [favorites, setFavorites] = useState([]);
@@ -67,7 +66,7 @@ const Home = () => {
 
   useEffect(() => {
     const fetchCityData = async () => {
-      fetchWeatherData(selectedCity)
+      fetchWeatherData(selectedCity.name)
         .then((weatherResponse) => {
           if (weatherResponse.cod === 200) {
             setWeatherData(weatherResponse);
@@ -88,27 +87,18 @@ const Home = () => {
   };
 
   const handleFavoriteFetch = async () => {
-    const storedFavorites = localStorage.getItem("weather-dashboard-favorites");
-    if (storedFavorites) {
-      setFavorites(JSON.parse(storedFavorites));
-    }
+    const res = await getFavoriteCities();
+    if (res.length > 0) setFavorites(res);
   };
 
-  const handleFavoriteAdd = (city) => {
-    setFavorites([...favorites, city]);
-
-    localStorage.setItem(
-      "weather-dashboard-favorites",
-      JSON.stringify([...favorites, city])
-    );
+  const handleFavoriteAdd = async (city) => {
+    const res = await addCityToFavorites(city);
+    handleFavoriteFetch();
   };
 
-  const handleFavoriteRemove = (city) => {
-    setFavorites(favorites.filter((favCity) => favCity !== city));
-    localStorage.setItem(
-      "weather-dashboard-favorites",
-      JSON.stringify(favorites.filter((favCity) => favCity !== city))
-    );
+  const handleFavoriteRemove = async (city) => {
+    const res = await removeCityFromFavorites(city);
+    handleFavoriteFetch();
   };
 
   useEffect(() => {

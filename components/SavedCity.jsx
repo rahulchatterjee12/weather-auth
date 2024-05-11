@@ -64,17 +64,15 @@ export default function SavedCityModal({
             sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}
           >
             {favorites.map((value) => {
-              const labelId = `checkbox-list-label-${value}`;
-
               return (
                 <ListItem
-                  key={value}
+                  key={value.id}
                   secondaryAction={
                     <IconButton
                       color="error"
                       edge="end"
                       aria-label="comments"
-                      onClick={() => deleteItem(value)}
+                      onClick={() => deleteItem(value.id)}
                     >
                       <DeleteIcon />
                     </IconButton>
@@ -86,7 +84,7 @@ export default function SavedCityModal({
                     onClick={() => setSelectedCity(value)}
                     dense
                   >
-                    <ListItemText id={labelId} primary={`${value}`} />
+                    <ListItemText primary={value.name} />
                   </ListItemButton>
                 </ListItem>
               );

@@ -1,43 +1,43 @@
 "use client";
 
 import { db } from "../../app/[locale]/firebase/config";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+} from "firebase/firestore";
 
-async function getFavoriteCities(userId) {
-  //   const favoriteCitiesRef = db
-  // .collection("users")
-  // .doc(userId)
-  // .collection("favoriteCities");
-
-  const docRef = doc(db, "users", "favoriteCities");
-  const user = await getDoc(docRef);
-  console.log(user);
-
-  //   const snapshot = await favoriteCitiesRef.get();
-  //   const favoriteCities = [];
-  //   snapshot.forEach((doc) => {
-  //     favoriteCities.push({ id: doc.id, ...doc.data() });
-  //   });
-  //   return favoriteCities;
+async function getFavoriteCities() {
+  const col = collection(db, "city");
+  const snapshot = await getDocs(col);
+  let cityList = [];
+  snapshot.docs.map((doc) => {
+    cityList.push({
+      id: doc.id,
+      ...doc.data(),
+    });
+  });
+  return cityList;
 }
 
-async function addCityToFavorites(userId, cityName) {
-  await setDoc(
-    doc(db, "favoriteCities", userId),
-    { cityName },
-    {
-      merge: true,
-    }
-  );
+async function addCityToFavorites(cityName) {
+  const col = collection(db, "city");
+  addDoc(col, {
+    name: cityName,
+  });
 }
 
-async function removeCityFromFavorites(userId, cityId) {
-  const favoriteCityRef = db
-    .collection("users")
-    .doc(userId)
-    .collection("favoriteCities")
-    .doc(cityId);
-  await favoriteCityRef.delete();
+async function removeCityFromFavorites(cityId) {
+  const ref = doc(db, "city", cityId);
+  deleteDoc(ref)
+    .then((res) => {
+      return true;
+    })
+    .catch((err) => {
+      return false;
+    });
 }
 
 export { getFavoriteCities, addCityToFavorites, removeCityFromFavorites };

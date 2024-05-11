@@ -59,7 +59,7 @@ const Forecast = ({ city }) => {
   const { t } = useTranslation();
   const [forecast, setForecast] = useState();
   const fetchCityData = async () => {
-    const response = await fetchFiveDaysForecast(city);
+    const response = await fetchFiveDaysForecast(city.name);
     setForecast(response?.list?.slice(0, 40));
   };
 
@@ -83,7 +83,6 @@ const Forecast = ({ city }) => {
     });
 
     const forecastData = groupDatetimeByDay(dates);
-    // console.log(forecastData);
     return (
       <>
         {forecastData &&

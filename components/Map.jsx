@@ -62,11 +62,15 @@ const Map = ({ city, weatherData, setSelectedCity }) => {
               </Marker>
 
               {cities.map((bigCity, i) => (
-                <div>
-                  {bigCity.name !== city && (
+                <div key={i}>
+                  {bigCity.name !== city.name && (
                     <Marker position={[bigCity.coords.lat, bigCity.coords.lon]}>
                       <Popup>
-                        <p onClick={() => setSelectedCity(bigCity.name)}>
+                        <p
+                          onClick={() =>
+                            setSelectedCity({ name: bigCity.name })
+                          }
+                        >
                           {bigCity.name}
                         </p>
                       </Popup>
