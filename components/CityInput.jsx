@@ -3,6 +3,8 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import { IconButton, Select, TextField, Tooltip } from "@mui/material";
 import SavedCityModal from "./SavedCity";
+import { auth } from "@/app/[locale]/firebase/config";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 const CityInput = ({
   selectedCity,
@@ -15,7 +17,7 @@ const CityInput = ({
   const handleSelectChange = (event) => {
     onCityChange(event.target.value);
   };
-
+  const [user] = useAuthState(auth);
   const isFavorite = (city) => favorites.includes(city);
 
   const handleFavoriteClick = (city) => {
@@ -36,21 +38,25 @@ const CityInput = ({
         value={selectedCity}
         onChange={handleSelectChange}
       />
-      {isFavorite(selectedCity) ? (
-        <Tooltip title="Save City">
-          <IconButton
-            color="error"
-            onClick={() => handleFavoriteClick(selectedCity)}
-          >
-            <FavoriteIcon />
-          </IconButton>
-        </Tooltip>
-      ) : (
-        <Tooltip title="Remove City">
-          <IconButton onClick={() => handleFavoriteClick(selectedCity)}>
-            <FavoriteBorderIcon />
-          </IconButton>
-        </Tooltip>
+      {user && (
+        <>
+          {isFavorite(selectedCity) ? (
+            <Tooltip title="Save City">
+              <IconButton
+                color="error"
+                onClick={() => handleFavoriteClick(selectedCity)}
+              >
+                <FavoriteIcon />
+              </IconButton>
+            </Tooltip>
+          ) : (
+            <Tooltip title="Remove City">
+              <IconButton onClick={() => handleFavoriteClick(selectedCity)}>
+                <FavoriteBorderIcon />
+              </IconButton>
+            </Tooltip>
+          )}
+        </>
       )}
       <SavedCityModal
         setSelectedCity={setSelectedCity}
