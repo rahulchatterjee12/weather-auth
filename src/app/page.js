@@ -14,6 +14,7 @@ import { Avatar, Menu, MenuItem, Tooltip } from "@mui/material";
 import { deepOrange } from "@mui/material/colors";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { addCityToFavorites, getFavoriteCities } from "@/helper/city/api";
 
 export default function Home() {
   const [selectedCity, setSelectedCity] = useState("Kolkata");
@@ -22,7 +23,7 @@ export default function Home() {
   const [favorites, setFavorites] = useState([]);
   const [user] = useAuthState(auth);
   const router = useRouter();
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -61,20 +62,26 @@ export default function Home() {
     };
 
     fetchCityData();
-
-    // Load favorites from localStorage (optional)
-    const storedFavorites = localStorage.getItem("weather-dashboard-favorites");
-    if (storedFavorites) {
-      setFavorites(JSON.parse(storedFavorites));
-    }
   }, [selectedCity]);
 
   const handleCityChange = (newCity) => {
     setSelectedCity(newCity);
   };
 
+  const handleFavoriteFetch = async () => {
+    console.log(user.uid);
+    if (user?.uid) {
+      const storedFavorites = await getFavoriteCities(user.uid);
+      console.log(storedFavorites);
+    }
+    // if (storedFavorites) {
+    //   setFavorites(JSON.parse(storedFavorites));
+    // }
+  };
+
   const handleFavoriteAdd = (city) => {
     setFavorites([...favorites, city]);
+
     localStorage.setItem(
       "weather-dashboard-favorites",
       JSON.stringify([...favorites, city])
@@ -88,6 +95,12 @@ export default function Home() {
       JSON.stringify(favorites.filter((favCity) => favCity !== city))
     );
   };
+
+  // useEffect(() => {
+  //   if (user) {
+  //     handleFavoriteFetch();
+  //   }
+  // }, [user]);
 
   return (
     <>
