@@ -7,6 +7,8 @@ import { useRouter } from "next/navigation";
 import { useAuthState } from "react-firebase-hooks/auth";
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
+import { setUser } from "@/store/slices/userSlice";
+import { useDispatch } from "react-redux";
 
 const SignUp = () => {
   const { t } = useTranslation();
@@ -15,6 +17,7 @@ const SignUp = () => {
   const [createUserWithEmailAndPassword] =
     useCreateUserWithEmailAndPassword(auth);
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const [user] = useAuthState(auth);
 
@@ -27,6 +30,7 @@ const SignUp = () => {
         sessionStorage.setItem("user", true);
         setEmail("");
         setPassword("");
+        dispatch(setUser({ userId: res.user.uid, userName: res.user.email }));
         router.push("/");
       }
     } catch (e) {

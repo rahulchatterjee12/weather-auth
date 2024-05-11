@@ -6,7 +6,13 @@ import { fetchAirQualityData, fetchWeatherData } from "@/helper/weather/api";
 import { signOut } from "firebase/auth";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/app/[locale]/firebase/config";
-import { Avatar, Menu, MenuItem, Tooltip } from "@mui/material";
+import {
+  Avatar,
+  Menu,
+  MenuItem,
+  Tooltip,
+  collapseClasses,
+} from "@mui/material";
 import { deepOrange } from "@mui/material/colors";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -17,10 +23,12 @@ import Forecast from "./Forecast";
 import Map from "./Map";
 import { useTranslation } from "react-i18next";
 import LanguageChanger from "./LanguageChanger";
+import { clearUser, setUser } from "@/store/slices/userSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const Home = () => {
   const { t } = useTranslation();
-  const [selectedCity, setSelectedCity] = useState("Ko");
+  const [selectedCity, setSelectedCity] = useState("Kolkata");
   const [weatherData, setWeatherData] = useState(null);
   const [airQualityData, setAirQualityData] = useState(null);
   const [favorites, setFavorites] = useState([]);
@@ -28,6 +36,9 @@ const Home = () => {
   const router = useRouter();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+  const dispatch = useDispatch();
+  const userDetails = useSelector((state) => state.user);
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -38,7 +49,8 @@ const Home = () => {
   const Logout = () => {
     signOut(auth);
     sessionStorage.removeItem("user");
-    router.push("/sign-up");
+    clearUser();
+    router.push("/sign-in");
   };
 
   useEffect(() => {
@@ -101,7 +113,10 @@ const Home = () => {
 
   useEffect(() => {
     handleFavoriteFetch();
-  }, []);
+    if (user) {
+      dispatch(setUser({ userId: user.uid, userName: user.email }));
+    }
+  }, [user]);
 
   return (
     <>
@@ -118,7 +133,8 @@ const Home = () => {
                   sx={{ bgcolor: deepOrange[500], cursor: "pointer" }}
                   onClick={handleClick}
                 >
-                  U
+                  {userDetails.userName &&
+                    userDetails.userName.charAt(0).toUpperCase()}
                 </Avatar>
               </Tooltip>
             ) : (
@@ -138,7 +154,9 @@ const Home = () => {
                 "aria-labelledby": "basic-button",
               }}
             >
-              <MenuItem onClick={handleClose}>User name</MenuItem>
+              <MenuItem onClick={handleClose}>
+                {userDetails && userDetails?.userName}
+              </MenuItem>
 
               <MenuItem onClick={Logout}>Logout</MenuItem>
             </Menu>
