@@ -16,15 +16,6 @@ import {
 import { cities } from "@/constent/city";
 
 const Map = ({ city, weatherData, setSelectedCity }) => {
-  const LeafIcon = L.Icon.extend({
-    options: {}
-  });
-
-  const greenIcon = new LeafIcon({
-      iconUrl:
-        "https://i.ibb.co/JKtg0gV/istockphoto-1148705812-612x612.jpg"
-    });
-  
   const ZoomHandler = () => {
     const map = useMap();
 
@@ -64,7 +55,6 @@ const Map = ({ city, weatherData, setSelectedCity }) => {
             <>
               <Marker
                 position={[weatherData?.coord?.lat, weatherData?.coord?.lon]}
-                icon={greenIcon}
                 >
                 <Popup>
                   <p>{city}</p>
