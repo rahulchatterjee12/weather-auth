@@ -22,7 +22,7 @@ const Map = ({ city, weatherData, setSelectedCity }) => {
 
   const greenIcon = new LeafIcon({
       iconUrl:
-        "https://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|2ecc71&chf=a,s,ee00FFFF"
+        "https://i.ibb.co/JKtg0gV/istockphoto-1148705812-612x612.jpg"
     });
   
   const ZoomHandler = () => {
