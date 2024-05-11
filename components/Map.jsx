@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import "leaflet/dist/leaflet.css";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.webpack.css";
 import "leaflet-defaulticon-compatibility";
+import * as L from "leaflet";
 import {
   MapContainer,
   TileLayer,
@@ -15,6 +16,15 @@ import {
 import { cities } from "@/constent/city";
 
 const Map = ({ city, weatherData, setSelectedCity }) => {
+  const LeafIcon = L.Icon.extend({
+    options: {}
+  });
+
+  const greenIcon = new LeafIcon({
+      iconUrl:
+        "https://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|2ecc71&chf=a,s,ee00FFFF"
+    });
+  
   const ZoomHandler = () => {
     const map = useMap();
 
@@ -54,7 +64,8 @@ const Map = ({ city, weatherData, setSelectedCity }) => {
             <>
               <Marker
                 position={[weatherData?.coord?.lat, weatherData?.coord?.lon]}
-              >
+                icon={greenIcon}
+                >
                 <Popup>
                   <p>{city}</p>
                 </Popup>
