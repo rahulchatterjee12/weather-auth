@@ -1,7 +1,7 @@
 import React from "react";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import { IconButton, Select, TextField, Tooltip } from "@mui/material";
+import { IconButton, TextField, Tooltip } from "@mui/material";
 import SavedCityModal from "./SavedCity";
 import { auth } from "@/app/[locale]/firebase/config";
 import { useAuthState } from "react-firebase-hooks/auth";
@@ -15,7 +15,7 @@ const CityInput = ({
   setSelectedCity,
 }) => {
   const handleSelectChange = (event) => {
-    onCityChange(event.target.value);
+    onCityChange({ name: event.target.value });
   };
   const [user] = useAuthState(auth);
   const isFavorite = (city) => {
