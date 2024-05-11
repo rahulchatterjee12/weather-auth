@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import "leaflet/dist/leaflet.css";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.webpack.css";
 import "leaflet-defaulticon-compatibility";
-import * as L from "leaflet";
+
 import {
   MapContainer,
   TileLayer,
@@ -33,7 +33,7 @@ const Map = ({ city, weatherData, setSelectedCity }) => {
 
     useEffect(() => {
       if (weatherData?.coord?.lon) {
-        flyToMarker([weatherData.coord.lat, weatherData.coord.lon], 5);
+        flyToMarker([weatherData.coord.lat, weatherData.coord.lon], 10);
       }
     }, [weatherData]);
   };
@@ -55,20 +55,24 @@ const Map = ({ city, weatherData, setSelectedCity }) => {
             <>
               <Marker
                 position={[weatherData?.coord?.lat, weatherData?.coord?.lon]}
-                >
+              >
                 <Popup>
                   <p>{city}</p>
                 </Popup>
               </Marker>
 
-              {cities.map((city) => (
-                <Marker position={[city.coords.lat, city.coords.lon]}>
-                  <Popup>
-                    <p onClick={() => setSelectedCity(city.name)}>
-                      {city.name}
-                    </p>
-                  </Popup>
-                </Marker>
+              {cities.map((bigCity, i) => (
+                <div>
+                  {bigCity.name !== city && (
+                    <Marker position={[bigCity.coords.lat, bigCity.coords.lon]}>
+                      <Popup>
+                        <p onClick={() => setSelectedCity(bigCity.name)}>
+                          {bigCity.name}
+                        </p>
+                      </Popup>
+                    </Marker>
+                  )}
+                </div>
               ))}
             </>
           )}
