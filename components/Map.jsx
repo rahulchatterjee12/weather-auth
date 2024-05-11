@@ -12,8 +12,9 @@ import {
   useMapEvents,
   useMap,
 } from "react-leaflet";
+import { cities } from "@/constent/city";
 
-const Map = ({ city, weatherData }) => {
+const Map = ({ city, weatherData, setSelectedCity }) => {
   const ZoomHandler = () => {
     const map = useMap();
 
@@ -55,9 +56,19 @@ const Map = ({ city, weatherData }) => {
                 position={[weatherData?.coord?.lat, weatherData?.coord?.lon]}
               >
                 <Popup>
-                  <p onClick={() => console.log("clicked")}>{city}</p>
+                  <p>{city}</p>
                 </Popup>
               </Marker>
+
+              {cities.map((city) => (
+                <Marker position={[city.coords.lat, city.coords.lon]}>
+                  <Popup>
+                    <p onClick={() => setSelectedCity(city.name)}>
+                      {city.name}
+                    </p>
+                  </Popup>
+                </Marker>
+              ))}
             </>
           )}
           <ZoomHandler />

@@ -166,6 +166,7 @@ const Home = () => {
                 city={selectedCity}
                 weatherData={weatherData}
                 airQualityData={airQualityData}
+                setSelectedCity={setSelectedCity}
               />
             </>
           )}
