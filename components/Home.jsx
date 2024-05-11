@@ -10,7 +10,6 @@ import { Avatar, Menu, MenuItem, Tooltip } from "@mui/material";
 import { deepOrange } from "@mui/material/colors";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { addCityToFavorites, getFavoriteCities } from "@/helper/city/api";
 import CityInput from "./CityInput";
 import WeatherCard from "./WeatherCard";
 import AirQuality from "./AirQuality";
@@ -21,7 +20,7 @@ import LanguageChanger from "./LanguageChanger";
 
 const Home = () => {
   const { t } = useTranslation();
-  const [selectedCity, setSelectedCity] = useState("Kolkata");
+  const [selectedCity, setSelectedCity] = useState("Ko");
   const [weatherData, setWeatherData] = useState(null);
   const [airQualityData, setAirQualityData] = useState(null);
   const [favorites, setFavorites] = useState([]);
@@ -58,7 +57,11 @@ const Home = () => {
     const fetchCityData = async () => {
       fetchWeatherData(selectedCity)
         .then((weatherResponse) => {
-          setWeatherData(weatherResponse);
+          if (weatherResponse.cod === 200) {
+            setWeatherData(weatherResponse);
+          } else {
+            setWeatherData(null);
+          }
         })
         .catch((err) => {
           setWeatherData(null);
@@ -73,14 +76,10 @@ const Home = () => {
   };
 
   const handleFavoriteFetch = async () => {
-    console.log(user.uid);
-    if (user?.uid) {
-      const storedFavorites = await getFavoriteCities(user.uid);
-      console.log(storedFavorites);
+    const storedFavorites = localStorage.getItem("weather-dashboard-favorites");
+    if (storedFavorites) {
+      setFavorites(JSON.parse(storedFavorites));
     }
-    // if (storedFavorites) {
-    //   setFavorites(JSON.parse(storedFavorites));
-    // }
   };
 
   const handleFavoriteAdd = (city) => {
@@ -100,17 +99,15 @@ const Home = () => {
     );
   };
 
-  // useEffect(() => {
-  //   if (user) {
-  //     handleFavoriteFetch();
-  //   }
-  // }, [user]);
+  useEffect(() => {
+    handleFavoriteFetch();
+  }, []);
 
   return (
     <>
       <div className="">
         <div className="flex justify-between mx-3 md:mx-20 mb-5 items-center">
-          <h1 className="text-center text-2xl my-3 font-semibold font-serif">
+          <h1 className="text-center text-lg md:text-2xl my-3 font-semibold font-serif">
             {t("common:title")}
           </h1>
           <div className="flex items-center gap-2">
@@ -126,7 +123,7 @@ const Home = () => {
               </Tooltip>
             ) : (
               <Link
-                className="border border-white rounded-full px-2 py-1"
+                className="border border-white rounded-full px-2 py-1 text-nowrap"
                 href="/sign-in"
               >
                 Sign In
@@ -157,7 +154,7 @@ const Home = () => {
         />
 
         <main>
-          {weatherData && (
+          {weatherData && selectedCity ? (
             <>
               <WeatherCard weatherData={weatherData} />
               <AirQuality airQualityData={airQualityData} />
@@ -169,6 +166,8 @@ const Home = () => {
                 setSelectedCity={setSelectedCity}
               />
             </>
+          ) : (
+            <div className="mt-16 text-center">{t("error")}</div>
           )}
         </main>
       </div>
