@@ -17,7 +17,7 @@ const HistoryForecast = ({ latitude, longitude }) => {
       <div className="flex gap-3 flex-wrap mx-auto justify-center">
         {data &&
           data.map((item, i) => (
-            <div key={i} className="border border-white rounded-md p-2">
+            <div key={i} className="border  border-white rounded-md p-2">
               <p className="text-xs text-center">
                 {new Date(item.dt * 1000).toDateString()}
               </p>
