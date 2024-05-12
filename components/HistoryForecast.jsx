@@ -2,8 +2,11 @@
 
 import React, { useEffect, useState } from "react";
 import { fetchPastFiveDaysForecast } from "@/helper/weather/api";
+import { useTranslation } from "react-i18next";
+import { CircularProgress } from "@mui/material";
 
 const HistoryForecast = ({ latitude, longitude }) => {
+  const { t } = useTranslation();
   const [data, setData] = useState(null);
   useEffect(() => {
     fetchPastFiveDaysForecast(latitude, longitude).then((res) => {
@@ -13,9 +16,9 @@ const HistoryForecast = ({ latitude, longitude }) => {
 
   return (
     <div className="">
-      <h2 className="text-center text-2xl my-5">5-Days Forecast History</h2>
+      <h2 className="text-center text-2xl my-5">{t("history")}</h2>
       <div className="flex gap-3 flex-wrap mx-auto justify-center">
-        {data &&
+        {data ? (
           data.map((item, i) => (
             <div key={i} className="border  border-white rounded-md p-2">
               <p className="text-xs text-center">
@@ -35,7 +38,12 @@ const HistoryForecast = ({ latitude, longitude }) => {
                 &deg;C
               </p>
             </div>
-          ))}
+          ))
+        ) : (
+          <div className="flex justify-center mt-5">
+            <CircularProgress size={30} />
+          </div>
+        )}
       </div>
     </div>
   );
