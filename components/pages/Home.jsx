@@ -6,7 +6,13 @@ import { fetchAirQualityData, fetchWeatherData } from "@/helper/weather/api";
 import { signOut } from "firebase/auth";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/app/[locale]/firebase/config";
-import { Avatar, Menu, MenuItem, Tooltip } from "@mui/material";
+import {
+  Avatar,
+  CircularProgress,
+  Menu,
+  MenuItem,
+  Tooltip,
+} from "@mui/material";
 import { deepOrange } from "@mui/material/colors";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -24,10 +30,11 @@ import {
   getFavoriteCities,
   removeCityFromFavorites,
 } from "@/helper/city/api";
+import HistoryForecast from "../HistoryForecast";
 
 const Home = () => {
   const { t } = useTranslation();
-  const [selectedCity, setSelectedCity] = useState({ name: "Bolpur" });
+  const [selectedCity, setSelectedCity] = useState({ name: "Kolkata" });
   const [weatherData, setWeatherData] = useState(null);
   const [airQualityData, setAirQualityData] = useState(null);
   const [favorites, setFavorites] = useState([]);
@@ -37,6 +44,7 @@ const Home = () => {
   const open = Boolean(anchorEl);
   const dispatch = useDispatch();
   const userDetails = useSelector((state) => state.user);
+  const [loading, setLoading] = useState(false);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -66,6 +74,7 @@ const Home = () => {
 
   useEffect(() => {
     const fetchCityData = async () => {
+      setLoading(true);
       fetchWeatherData(selectedCity.name)
         .then((weatherResponse) => {
           if (weatherResponse.cod === 200) {
@@ -76,6 +85,9 @@ const Home = () => {
         })
         .catch((err) => {
           setWeatherData(null);
+        })
+        .finally(() => {
+          setLoading(false);
         });
     };
 
@@ -92,12 +104,12 @@ const Home = () => {
   };
 
   const handleFavoriteAdd = async (city) => {
-    const res = await addCityToFavorites(city, userDetails.userId);
+    await addCityToFavorites(city, userDetails.userId);
     handleFavoriteFetch();
   };
 
   const handleFavoriteRemove = async (city) => {
-    const res = await removeCityFromFavorites(city);
+    await removeCityFromFavorites(city);
     handleFavoriteFetch();
   };
 
@@ -161,23 +173,37 @@ const Home = () => {
           setSelectedCity={setSelectedCity}
         />
 
-        <main>
-          {weatherData && selectedCity ? (
-            <>
-              <WeatherCard weatherData={weatherData} />
-              <AirQuality airQualityData={airQualityData} />
-              <Forecast city={selectedCity} />
-              <Map
-                city={selectedCity}
-                weatherData={weatherData}
-                airQualityData={airQualityData}
-                setSelectedCity={setSelectedCity}
-              />
-            </>
-          ) : (
-            <div className="mt-16 text-center">{t("error")}</div>
-          )}
-        </main>
+        {!loading ? (
+          <main>
+            {weatherData && selectedCity ? (
+              <>
+                <WeatherCard weatherData={weatherData} />
+                <AirQuality airQualityData={airQualityData} />
+                <Forecast city={selectedCity} />
+                {weatherData?.coord && (
+                  <HistoryForecast
+                    latitude={weatherData.coord.lat}
+                    longitude={weatherData.coord.lon}
+                  />
+                )}
+                <Map
+                  city={selectedCity}
+                  weatherData={weatherData}
+                  airQualityData={airQualityData}
+                  setSelectedCity={setSelectedCity}
+                />
+              </>
+            ) : (
+              <div className="mt-16 text-center">
+                {selectedCity.name !== "" ? t("error") : t("error2")}
+              </div>
+            )}
+          </main>
+        ) : (
+          <div className="flex justify-center mt-10">
+            <CircularProgress size={50} />
+          </div>
+        )}
       </div>
     </>
   );

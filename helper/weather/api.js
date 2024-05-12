@@ -46,9 +46,20 @@ const fetchFiveDaysForecast = async (city) => {
   }
 };
 
+const fetchPastFiveDaysForecast = async (latitude, longitude) => {
+  try {
+    const url = `http://api.openweathermap.org/data/2.5/onecall?lat=${latitude}&lon=${longitude}&exclude=current,minutely,hourly&appid=${apiKey}`;
+    const response = await fetch(url);
+    return await response.json();
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 export {
   fetchWeatherData,
   fetchAirQualityData,
   fetchFiveDaysForecast,
   fetchLocationWeather,
+  fetchPastFiveDaysForecast,
 };

@@ -43,9 +43,13 @@ const CityInput = ({
         fullWidth
         size="small"
         variant="outlined"
-        color="secondary"
+        // color="secondary"
         value={selectedCity.name}
         onChange={handleSelectChange}
+        sx={{
+          border: "red",
+          color: "white",
+        }}
       />
       {user && (
         <>
