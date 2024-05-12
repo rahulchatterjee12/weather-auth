@@ -13,7 +13,40 @@ import {
   useMapEvents,
   useMap,
 } from "react-leaflet";
+
+import * as L from "leaflet";
+
 import { cities } from "@/constent/city";
+import { fetchLocationWeather } from "@/helper/weather/api";
+
+const MapWeather = ({ bigCity, setSelectedCity }) => {
+  const [icon, setIcon] = useState(null);
+  useEffect(() => {
+    fetchLocationWeather(bigCity.name)
+      .then((res) => {
+        var temp = new L.Icon({
+          iconUrl: res.iconUrl,
+          iconSize: [25, 25],
+          iconAnchor: [12, 41],
+          popupAnchor: [1, -34],
+        });
+        setIcon(temp);
+      })
+      .catch((err) => {});
+  }, []);
+
+  if (!icon) return <></>;
+
+  return (
+    <Marker position={[bigCity.coords.lat, bigCity.coords.lon]} icon={icon}>
+      <Popup>
+        <p onClick={() => setSelectedCity({ name: bigCity.name })}>
+          {bigCity.name}
+        </p>
+      </Popup>
+    </Marker>
+  );
+};
 
 const Map = ({ city, weatherData, setSelectedCity }) => {
   const ZoomHandler = () => {
@@ -57,24 +90,17 @@ const Map = ({ city, weatherData, setSelectedCity }) => {
                 position={[weatherData?.coord?.lat, weatherData?.coord?.lon]}
               >
                 <Popup>
-                  <p>{city}</p>
+                  <p>{city.name}</p>
                 </Popup>
               </Marker>
 
               {cities.map((bigCity, i) => (
                 <div key={i}>
                   {bigCity.name !== city.name && (
-                    <Marker position={[bigCity.coords.lat, bigCity.coords.lon]}>
-                      <Popup>
-                        <p
-                          onClick={() =>
-                            setSelectedCity({ name: bigCity.name })
-                          }
-                        >
-                          {bigCity.name}
-                        </p>
-                      </Popup>
-                    </Marker>
+                    <MapWeather
+                      bigCity={bigCity}
+                      setSelectedCity={setSelectedCity}
+                    />
                   )}
                 </div>
               ))}

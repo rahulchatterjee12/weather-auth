@@ -27,7 +27,7 @@ import {
 
 const Home = () => {
   const { t } = useTranslation();
-  const [selectedCity, setSelectedCity] = useState({ name: "Kolkata" });
+  const [selectedCity, setSelectedCity] = useState({ name: "Bolpur" });
   const [weatherData, setWeatherData] = useState(null);
   const [airQualityData, setAirQualityData] = useState(null);
   const [favorites, setFavorites] = useState([]);
@@ -52,6 +52,24 @@ const Home = () => {
     router.push("/sign-in");
   };
 
+  const [location, setLocation] = useState(null);
+
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setLocation({ latitude, longitude });
+        },
+        (error) => {
+          console.error("Error getting location:", error);
+        }
+      );
+    } else {
+      console.error("Geolocation is not supported by this browser.");
+    }
+  }, []);
+
   useEffect(() => {
     if (weatherData) {
       fetchAirQualityData(weatherData.coord)
@@ -66,7 +84,7 @@ const Home = () => {
 
   useEffect(() => {
     const fetchCityData = async () => {
-      fetchWeatherData(selectedCity.name)
+      fetchWeatherData(selectedCity.name, location)
         .then((weatherResponse) => {
           if (weatherResponse.cod === 200) {
             setWeatherData(weatherResponse);

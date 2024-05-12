@@ -1,13 +1,28 @@
 const apiKey = "895284fb2d2c50a520ea537456963d9c";
 
-const fetchWeatherData = async (city) => {
+const fetchWeatherData = async (city, location) => {
   try {
     const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}`;
+
     const response = await fetch(url);
     return await response.json();
   } catch (error) {
     console.error(error);
   }
+};
+
+const fetchLocationWeather = async (city) => {
+  try {
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}`;
+    const response = await fetch(url);
+    const data = await response.json();
+    return {
+      iconUrl: `https://openweathermap.org/img/wn/${
+        data.weather && data.weather[0]?.icon
+      }@2x.png`,
+      temp: Math.round(data.main && data.main.temp - 273.15),
+    };
+  } catch (error) {}
 };
 
 const fetchAirQualityData = async (coords) => {
@@ -31,4 +46,9 @@ const fetchFiveDaysForecast = async (city) => {
   }
 };
 
-export { fetchWeatherData, fetchAirQualityData, fetchFiveDaysForecast };
+export {
+  fetchWeatherData,
+  fetchAirQualityData,
+  fetchFiveDaysForecast,
+  fetchLocationWeather,
+};
