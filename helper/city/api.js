@@ -9,23 +9,26 @@ import {
   getDocs,
 } from "firebase/firestore";
 
-async function getFavoriteCities() {
+async function getFavoriteCities(userId) {
   const col = collection(db, "city");
   const snapshot = await getDocs(col);
   let cityList = [];
   snapshot.docs.map((doc) => {
-    cityList.push({
-      id: doc.id,
-      ...doc.data(),
-    });
+    if (doc.data().userId === userId) {
+      cityList.push({
+        id: doc.id,
+        ...doc.data(),
+      });
+    }
   });
   return cityList;
 }
 
-async function addCityToFavorites(cityName) {
+async function addCityToFavorites(cityName, userId) {
   const col = collection(db, "city");
   addDoc(col, {
     name: cityName,
+    userId,
   });
 }
 

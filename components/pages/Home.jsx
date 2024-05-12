@@ -52,24 +52,6 @@ const Home = () => {
     router.push("/sign-in");
   };
 
-  const [location, setLocation] = useState(null);
-
-  useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          setLocation({ latitude, longitude });
-        },
-        (error) => {
-          console.error("Error getting location:", error);
-        }
-      );
-    } else {
-      console.error("Geolocation is not supported by this browser.");
-    }
-  }, []);
-
   useEffect(() => {
     if (weatherData) {
       fetchAirQualityData(weatherData.coord)
@@ -84,7 +66,7 @@ const Home = () => {
 
   useEffect(() => {
     const fetchCityData = async () => {
-      fetchWeatherData(selectedCity.name, location)
+      fetchWeatherData(selectedCity.name)
         .then((weatherResponse) => {
           if (weatherResponse.cod === 200) {
             setWeatherData(weatherResponse);
@@ -105,12 +87,12 @@ const Home = () => {
   };
 
   const handleFavoriteFetch = async () => {
-    const res = await getFavoriteCities();
+    const res = await getFavoriteCities(user?.uid);
     if (res.length > 0) setFavorites(res);
   };
 
   const handleFavoriteAdd = async (city) => {
-    const res = await addCityToFavorites(city);
+    const res = await addCityToFavorites(city, userDetails.userId);
     handleFavoriteFetch();
   };
 
@@ -120,10 +102,10 @@ const Home = () => {
   };
 
   useEffect(() => {
-    handleFavoriteFetch();
     if (user) {
       dispatch(setUser({ userId: user.uid, userName: user.email }));
     }
+    handleFavoriteFetch();
   }, [user]);
 
   return (
