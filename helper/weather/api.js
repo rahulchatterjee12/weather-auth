@@ -1,4 +1,5 @@
-const apiKey = "895284fb2d2c50a520ea537456963d9c";
+const apiKey = process.env.NEXT_PUBLIC_WEATHER_API_KEY;
+const auiApi = process.env.NEXT_PUBLIC_AQI_API_KEY;
 
 const fetchWeatherData = async (city) => {
   try {
@@ -27,7 +28,7 @@ const fetchLocationWeather = async (city) => {
 
 const fetchAirQualityData = async (coords) => {
   try {
-    const url = `http://api.airvisual.com/v2/nearest_city?lat=${coords.lat}&lon=${coords.lon}&key=88ec9941-245a-45e2-82aa-ddbdba8c6ab5`;
+    const url = `http://api.airvisual.com/v2/nearest_city?lat=${coords.lat}&lon=${coords.lon}&key=${auiApi}`;
 
     const response = await fetch(url);
     return await response.json();
